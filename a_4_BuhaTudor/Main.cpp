@@ -1,27 +1,27 @@
 #include <iostream>
 #include <crtdbg.h>
 #include "UI.h"
-//#include "Tests.h"
+#include "Tests.h"
 
 int main() 
 {
-	{
-		DynamicArray<Movie> allMovies;
+	//  taskkill /F /IM a_4_BuhaTudor.exe
 
-		Repository repo{ allMovies };
+	DynamicArray<Movie> allMovies;
 
-		AdminService adminService{ repo };
-		adminService.initialiseAllMovies();
+	Repository repo{ allMovies };
 
-		UserService userService{ repo };
+	AdminService adminService{ repo };
 
-		UI console{ adminService, userService };
+	adminService.initialiseAllMovies();
 
-		//Tests testing;
-		//testing.testAll();
-		//cout<< "All tests passed!" << endl;
+	UserService userService{ repo };
 
-		console.startAppUI();
-	}
-	//_CrtDumpMemoryLeaks();
+	UI console{ adminService, userService };
+		
+	Tests testing;
+	testing.testAll();
+
+	console.startAppUI();
+
 }

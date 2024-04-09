@@ -23,7 +23,7 @@ public:
 	DynamicArray(const DynamicArray& dynaicArrayToCopy);
 
 	//assignment operator
-	DynamicArray& operator=(const DynamicArray& dynamicArrayToCopy);
+	DynamicArray& operator=(const DynamicArray& dynamicArrayToCopy); 
 
 
 	//methods for the DynamicArray
@@ -37,16 +37,14 @@ public:
 };
 
 
-///////////////
-template <typename TElem>
+
+template <typename TElem> 
 void DynamicArray<TElem>::resize()
 {
 	int tempCapacity = this->capacity * 2;
 	TElem* tempElems = new TElem[tempCapacity];
-	if (tempElems == nullptr)
-	{
-		return;
-	}
+	//if (tempElems == nullptr)
+	//	return;
 	this->capacity = tempCapacity;
 	for (int index = 0; index < this->size; index++)
 	{
@@ -62,7 +60,6 @@ DynamicArray<TElem>::DynamicArray(int initialCapacity)
 	this->size = 0;
 	this->capacity = initialCapacity;
 	this->elements = new TElem[initialCapacity];
-	//this->elems = new TElem[this->capacity];
 }
 
 template <typename TElem>
@@ -100,7 +97,7 @@ DynamicArray<TElem>& DynamicArray<TElem>::operator=(const DynamicArray& dynamicA
 	return *this; // returns a reference to the current object
 }
 
-template <typename TElem>
+template <typename TElem> 
 void DynamicArray<TElem>::addElement(const TElem& elementToBeAdded)
 {
 	if (this->size == this->capacity)

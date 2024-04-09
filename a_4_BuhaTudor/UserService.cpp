@@ -1,22 +1,41 @@
 #include "UserService.h"
 
+/*
+  Constructor for the UserService class
+*/
 UserService::UserService(Repository initialMoviesRepository) : moviesRepository(initialMoviesRepository)
 {
 }
 
+/*
+  Function that returns all the movies from the repository
+
+  Returns:
+	- a DynamicArray<Movie> object that contains all the movies from the repository
+*/
 bool UserService::addMovieToWatchList(Movie movieToAdd)
 {
-	if(this->watchList.findPositionOfElement(movieToAdd) == -1)
+	if(this->watchList.findPositionOfElement(movieToAdd) != -1)
 		return false;
 	this->watchList.addElement(movieToAdd);
 	return true;
 }
 
-bool UserService::removeMovieFromWatchList(string Title, int YearOfRelease)
+/*
+  Function that removes a movie from the watch list
+
+  Parameters:
+	- Title: a string representing the title of the movie to be removed
+	- Genre: a string representing the genre of the movie to be removed
+
+  Returns:
+	- true, if the movie was removed successfully
+	- false, otherwise
+*/
+bool UserService::removeMovieFromWatchList(string Title, string Genre)
 {
-	string Genre= "";
 	string Link = "";
-	int NrLikes = 0;
+	int NrLikes = 0, YearOfRelease = 0;
 	Movie movieToRemove(Title, Genre, YearOfRelease, NrLikes, Link);
 	int indexOfMovieToRemove = this->watchList.findPositionOfElement(movieToRemove);
 	if(indexOfMovieToRemove < 0 || indexOfMovieToRemove >= this->watchList.getSize())
@@ -25,6 +44,12 @@ bool UserService::removeMovieFromWatchList(string Title, int YearOfRelease)
 	return true;
 }
 
+/*
+  Function that returns all the movies from the watch list
+
+  Returns:
+	- a DynamicArray<Movie> object that contains all the movies from the watch list
+*/
 DynamicArray<Movie> UserService::getMoviesOfGivenGenre(DynamicArray<Movie> allMovies, string Genre)
 {
 	if(Genre.compare("") == 0)
@@ -40,8 +65,24 @@ DynamicArray<Movie> UserService::getMoviesOfGivenGenre(DynamicArray<Movie> allMo
 	return neededMovies;
 }
 
+/*
+  Function that returns all the movies from the watch list
+
+  Returns:
+	- a DynamicArray<Movie> object that contains all the movies from the watch list
+*/
 DynamicArray<Movie> UserService::getWatchList()
 {
 	return this->watchList;	
 }
 
+/*
+  Function that returns all the movies from the watch list
+
+  Returns:
+	- a DynamicArray<Movie> object that contains all the movies from the watch list
+*/
+void UserService::initialiseWatchList()
+{
+	this->watchList = this->moviesRepository.getAllMovies();
+}

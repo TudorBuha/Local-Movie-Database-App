@@ -1,39 +1,62 @@
 #include "AdminService.h"
 #include <iostream>
-
+/*
+ Constructor for the AdminService class
+*/
 AdminService::AdminService(Repository initialMoviesRepository) : moviesRepository{ initialMoviesRepository }
 {
 }
 
+/*
+ Destructor for the AdminService class
+*/
 bool AdminService::addMovie(string Title, string Genre, int YearOfRelease, int NrLikes, string Link)
 {
 	Movie movieToAdd{ Title, Genre, YearOfRelease, NrLikes, Link };
 	return this->moviesRepository.addMovie(movieToAdd);
 }
 
-bool AdminService::removeMovie(string Title, int YearOfRelease)
+/*
+	Function that removes a movie from the repository
+*/
+bool AdminService::removeMovie(string Title, string Genre)
 {
-	//////////////idk sure how to remove
-	string Genre = "";
+	//string Genre = "";
 	int NrLikes = 0;
+	int YearOfRelease = 0;
 	string Link = "";
 	Movie movieToRemove{Title, Genre, YearOfRelease, NrLikes, Link};
 	int indexOfMovieToRemove = this->moviesRepository.getMoviePosition(movieToRemove);
 	return this->moviesRepository.removeMovie(indexOfMovieToRemove);
 }
 
+/*
+	Function that updates a movie from the repository
+*/
 bool AdminService::updateMovie(string Title, string Genre, string NewTitle, string NewGenre, int NewYearOfRelease, int NewNrLikes, string NewLink)
 {
-	int yearOfRelease = 0;
-	int NrLikes = 0;
-	string Link = "";
-	Movie movieToUpdate{ Title, Genre, yearOfRelease, NrLikes, Link };
+	//int yearOfRelease = 0;
+	//int NrLikes = 0;
+	//string Link = "";
+	Movie movieToUpdate{ Title, Genre, 0, 0, ""};
 	Movie updatedMovie{ NewTitle, NewGenre, NewYearOfRelease, NewNrLikes, NewLink };
 	int indexOfMovieToUpdate = this->moviesRepository.getMoviePosition(movieToUpdate);
 	return this->moviesRepository.updateMovie(indexOfMovieToUpdate, updatedMovie);
 }
 
+/*
+	Function that increases the number of likes of a movie from the repository
+*/
+bool AdminService::increaseLikes(string Title, string Genre)
+{
+	Movie movieToUpdate{ Title, Genre, 0, 0, "" };	
+	int indexOfMovieToUpdate = this->moviesRepository.getMoviePosition(movieToUpdate);
+	Movie oldMovie = this->moviesRepository.getAllMovies().getElement(indexOfMovieToUpdate);
+	Movie updatedMovie{ Title, Genre, oldMovie.getYearOfRelease(), oldMovie.getNrLikes() + 1, oldMovie.getLink() };
+	return this->moviesRepository.updateMovie(indexOfMovieToUpdate, updatedMovie);
+}
 
+/*
 bool AdminService::increaseLikes(string Title, int YearOfRelease)
 {
 	string Genre="", Link="";
@@ -44,19 +67,19 @@ bool AdminService::increaseLikes(string Title, int YearOfRelease)
 	Movie updatedMovie{ Title, Genre, oldMovie.getYearOfRelease(), oldMovie.getNrLikes() + 1, oldMovie.getLink() };
 	return this->moviesRepository.updateMovie(indexOfMovieToUpdate, updatedMovie);
 }
+*/
 
+/*
+	Function that returns all the movies from the repository
+*/
 DynamicArray<Movie> AdminService::getAllMovies()
 {
-	//add an indexing before each print
-
-	//for (int i = 0; i < this->moviesRepository.getAllMovies().getSize(); i++)
-	//{
-	//	std::cout << i + 1 << ". " << this->moviesRepository.getAllMovies().getElement(i).toString() << std::endl;
-	//}
-
 	return this->moviesRepository.getAllMovies();
 }
 
+/*
+	Function that returns the movie with the most likes from the repository
+*/
 void AdminService::initialiseAllMovies()
 {
 	this->addMovie("Titanic", "Drama", 1997, 69, "https://www.imdb.com/title/tt0120338/");
@@ -70,4 +93,5 @@ void AdminService::initialiseAllMovies()
 	this->addMovie("The Fellowship of the Ring", "Action", 2001, 63, "https://www.imdb.com/title/tt0120737/");
 	this->addMovie("The Matrix", "Action", 1999, 62, "https://www.imdb.com/title/tt0133093/");
 }
+
 

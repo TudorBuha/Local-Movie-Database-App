@@ -12,9 +12,9 @@ private:
 public:
 	AdminService(Repository initialMovieRepository);
 	bool addMovie(string Title, string Genre, int YearOfRelease, int NrLikes, string Link);
-	bool removeMovie(string Title, int YearOfRelease);
+	bool removeMovie(string Title, string Genre);
 	bool updateMovie(string Title, string Genre, string NewTitle, string NewGenre, int NewYearOfRelease, int NewNrLikes, string NewLink);
-	bool increaseLikes(string Title, int YearOfRelease);
+	bool increaseLikes(string Title, string Genre);
 
 	DynamicArray<Movie> getAllMovies();
 	void initialiseAllMovies();

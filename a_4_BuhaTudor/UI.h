@@ -13,6 +13,7 @@ public:
 	//admin stuff
 	void addMovieUi();
 	void removeMovieUI();
+	void updateMovieUI2();
 	void updateMovieUI();
 	void displayAllMoviesUI();
 	void printAdminMenuUI();

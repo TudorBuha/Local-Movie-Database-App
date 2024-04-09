@@ -31,7 +31,7 @@ public:
 	Movie() : Title(""), Genre(""), YearOfRelease(0), NrLikes(0), Link("") {} 
 
 	bool operator == (const Movie& MovieToCompare); // for comparing two movie objects
-	void operator = (const Movie& MovieToCopy); // for makeing a copy of the movie object
+	void operator = (const Movie& MovieToCopy); // for making a copy of the movie object
 
 	string toString();
 };

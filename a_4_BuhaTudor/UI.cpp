@@ -22,7 +22,6 @@ void UI::addMovieUi()
 	getline(cin, Title);
 
 	cout << "Movie genre: '\n'";
-	//cin.ignore(); 
 	getline(cin, Genre);
 
 	cout << "Year of release: '\n'";
@@ -45,16 +44,17 @@ void UI::addMovieUi()
 void UI::removeMovieUI()
 {
 	string Title = "";
-	int YearOfRelease = 0;
+	string Genre = "";
 
-	cout << "Movie title to be removed:'\n' ";
+	cout << "Movie title to be removed: ";
 	cin.ignore();
 	getline(cin, Title);
 
-	cout<< "Year of release:'\n' ";
-	cin >> YearOfRelease;
+	cout<<"Genre: ";
 
-	bool checkRemoved = this->adminService.removeMovie(Title, YearOfRelease);
+	getline(cin, Genre);
+
+	bool checkRemoved = this->adminService.removeMovie(Title, Genre);
 	if (checkRemoved == true)
 		cout << "Movie removed successfully!" << '\n';
 	else
@@ -62,50 +62,50 @@ void UI::removeMovieUI()
 }
 
 
-//////////////////////////      TODO      //////////////////////////////////
+
 void UI::updateMovieUI()
 {
-	string Title = "", Genre = "", Link = "";
-	int YearOfRelease = 0, NrLikes = 0;
-	string NewTitle = "", NewGenre = "", NewLink = "";
-	int NewYearOfRelease = 0, NewNrLikes = 0;
+	string Title, Genre;
 
-	cout << "Movie title to be updated:'\n' ";
+	std::cout<<"Enter the title of the movie you want to update: ";
 	cin.ignore();
 	getline(cin, Title);
 
-	cout<< "Year of release: '\n'";
-	cin >> YearOfRelease;
+	std::cout << "Enter the genre of the movie you want to update: ";
+	//cin.ignore();
+	getline(cin, Genre);
 
-	cout << "New movie title:'\n' ";
+
+	std::cout<<"Enter the new title of the movie: ";
+	string newTitle;
+	//cin.ignore();
+	getline(cin, newTitle);
+
+	std::cout<<"Enter the new genre of the movie: ";
+	string newGenre;
+	//cin.ignore();
+	getline(cin, newGenre);
+
+	std::cout<<"Enter the new year of release of the movie: ";
+	int newYearOfRelease;
+	cin>>newYearOfRelease;
+
+	std::cout<<"Enter the new number of likes of the movie: ";
+	int newNrLikes;
+	cin>>newNrLikes;
+
+	std::cout<<"Enter the new link of the movie: ";
+	string newLink;
 	cin.ignore();
-	getline(cin, NewTitle);
+	getline(cin, newLink);
 
-	cout<< "New movie genre: '\n'";
-	cin.ignore();
-	getline(cin, NewGenre);
-
-	cout << "New year of release:'\n' ";
-	cin >> NewYearOfRelease;
-
-	cout << "New number of likes: '\n'";
-	cin >> NewNrLikes;
-
-	cout << "New link:'\n' ";
-	cin.ignore();
-	getline(cin, NewLink);
-
-
-	//bool AdminService::updateMovie(string Title, string Genre, string NewTitle, string NewGenre, int NewYearOfRelease, int NewNrLikes, string NewLink)
-
-	bool checkUpdated = this->adminService.updateMovie(Title, Genre, NewTitle, NewGenre, NewYearOfRelease, NewNrLikes, NewLink);
+	bool checkUpdated = this->adminService.updateMovie(Title, Genre, newTitle, newGenre, newYearOfRelease, newNrLikes, newLink);
 	if (checkUpdated == true)
 		cout << "Movie updated successfully!" << '\n';
 	else
 		cout << "Movie does not exist!" << '\n';
-
-
 }
+
 
 void UI::displayAllMoviesUI()
 {
@@ -195,6 +195,9 @@ void UI::searchMovieByGenreUI()
 		cout << "\n#" << currentMovieIndex + 1 << std::endl;
 		cout << currentMovie.toString() << '\n';
 
+		string command = "start " + currentMovie.getLink();
+		system(command.c_str());
+
 		cout << "Do you want to add this movie to your watchlist? (yes/next): ";
 		cout<< "Write 'x' to exit search!\n\n";
 
@@ -228,12 +231,56 @@ void UI::searchMovieByGenreUI()
 
 void UI::removeMovieFromWatchlistUI()
 {
-	//////////////////////////      TODO      //////////////////////////////////
+	string Title = "", Genre = "";
+	string userOption;
+
+	std::cout<<"Enter the title of the movie you want to remove from the watchlist: ";
+	cin.ignore();
+	getline(cin, Title);
+
+	std::cout<<"Enter the genre of the movie you want to remove from the watchlist: ";
+	//cin.ignore();
+	getline(cin, Genre);
+
+	bool checkRemoved = this->userService.removeMovieFromWatchList(Title, Genre);
+	if (checkRemoved == false)
+		cout << "Movie does not exist in the watchlist!" << '\n';
+	else
+	{
+		cout<<"Would you like to leave a like at this tutorial before removing it? (yes/no)\n";
+		while (true)
+		{
+			cout << "> ";
+			cin >> userOption;
+			if (userOption.compare("yes") == 0)
+			{
+				this->adminService.increaseLikes(Title, Genre);
+				cout << "Like added! Thank you for feedback!" << '\n';
+				break;
+			}
+			else if (userOption.compare("no") == 0)
+			{
+				cout << "Like not added! Thank you for feedback!" << '\n';
+				break;
+			}
+			else
+				cout << "Invalid option! Please try again!\n Hint:(yes/no)" << '\n';	
+			cout << "Movie removed from watchlist successfully!" << '\n';
+		}
+	}
+
+		
 }
 
 void UI::displayWatchlistUI()
 {
-	//////////////////////////      TODO      //////////////////////////////////
+	DynamicArray<Movie> watchlist = this->userService.getWatchList();
+	for (int i = 0; i < watchlist.getSize(); i++)
+	{
+		Movie currentMovie = watchlist.getElement(i);
+		cout << "#" << i + 1 << ". ";
+		cout << currentMovie.toString() << '\n';
+	}
 }
 
 void UI::printUserMenuUI()
@@ -247,7 +294,39 @@ void UI::printUserMenuUI()
 
 void UI::userModeUI()
 {
-	//////////////////////////      TODO      //////////////////////////////////
+	int optionChosen = -1;
+	printUserMenuUI();
+	while (true)
+	{
+		cout<<"Enter option: ";
+		cin >> optionChosen;
+
+		if (cin.fail() || optionChosen < 0 || optionChosen > 3)
+		{
+			cout<<"Invalid option!"<<'\n';
+			cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // clear the buffer from invalid input 
+			continue;
+		}
+		switch (optionChosen)
+		{
+		case 1:
+			searchMovieByGenreUI();
+			break;
+		case 2:
+			removeMovieFromWatchlistUI();
+			break;
+		case 3:
+			displayWatchlistUI();
+			break;
+		case 0:
+			cout << std::endl;
+			return;
+		default:
+			cout<<"Invalid option! Please try again!"<<'\n';
+			break;
+		}
+	}
 }
 
 
@@ -264,11 +343,11 @@ void UI::startAppUI()
 		cin >> accesMode;
 		if (accesMode.compare("admin") == 0)
 			adminModeUI();
-		//else if (accesMode.compare("user") == 0)
-		//	userModeUI();
+		else if (accesMode.compare("user") == 0)
+			userModeUI();
 		else if (accesMode.compare("exit")==0)
 		{
-			cout<<"App closed succesfully!"<<'\n';
+			cout<<"App closed successfully!"<<'\n';
 			return;
 		}
 		else

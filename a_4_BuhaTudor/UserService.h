@@ -12,7 +12,8 @@ private:
 public:
 	UserService(Repository initialMoviesRepository);
 	bool addMovieToWatchList(Movie movieToAdd);
-	bool removeMovieFromWatchList(string Title, int YearOfRelease);
+	bool removeMovieFromWatchList(string Title, string Genre);
 	DynamicArray<Movie> getMoviesOfGivenGenre(DynamicArray<Movie> allMovies, string Genre);
 	DynamicArray<Movie> getWatchList();
+	void initialiseWatchList();
 };
