@@ -109,12 +109,11 @@ void UI::updateMovieUI()
 
 void UI::displayAllMoviesUI()
 {
-	DynamicArray<Movie> allMovies = this->adminService.getAllMovies();
-	for (int i = 0; i < allMovies.getSize(); i++)
+	vector<Movie> allMovies = this->adminService.getAllMovies();
+	for(const auto& currentMovie : allMovies)
 	{
-		Movie currentMovie = allMovies.getElement(i);
-		cout << "#" << i + 1 << ". ";
-		cout << currentMovie.toString() << '\n';
+		std::cout<<"#"<< &currentMovie - allMovies.data() + 1 << ".";
+		std::cout<<currentMovie.getTitle()<< " - " << currentMovie.getGenre()<< " - " << currentMovie.getYearOfRelease()<<", Number of likes: "<<currentMovie.getNrLikes()<<", Link: "<<currentMovie.getLink() << '\n';
 	}
 }
 
@@ -178,20 +177,20 @@ void UI::searchMovieByGenreUI()
 	cin.ignore();
 	getline(cin, genre);
 
-	DynamicArray<Movie> searchedMovies = this->userService.getMoviesOfGivenGenre(this->adminService.getAllMovies(), genre);
+	vector<Movie> searchedMovies = this->userService.getMoviesOfGivenGenre(this->adminService.getAllMovies(), genre);
 	int currentMovieIndex = 0;
 
 	while (true)
 	{
-		if (searchedMovies.getSize() == 0)
+		if (searchedMovies.size() == 0)
 		{
 			cout << "\nInvalid search! Please enter a valid genre!\n";
 			break;
 		}
-		if(currentMovieIndex == searchedMovies.getSize())
+		if(currentMovieIndex == searchedMovies.size())
 			currentMovieIndex = 0;
 
-		Movie currentMovie = searchedMovies.getElement(currentMovieIndex);
+		Movie currentMovie = searchedMovies[currentMovieIndex];
 		cout << "\n#" << currentMovieIndex + 1 << std::endl;
 		cout << currentMovie.toString() << '\n';
 
@@ -274,10 +273,10 @@ void UI::removeMovieFromWatchlistUI()
 
 void UI::displayWatchlistUI()
 {
-	DynamicArray<Movie> watchlist = this->userService.getWatchList();
-	for (int i = 0; i < watchlist.getSize(); i++)
+	vector<Movie> watchlist = this->userService.getWatchList();
+	for (int i = 0; i < watchlist.size(); i++)
 	{
-		Movie currentMovie = watchlist.getElement(i);
+		Movie currentMovie = watchlist[i];
 		cout << "#" << i + 1 << ". ";
 		cout << currentMovie.toString() << '\n';
 	}

@@ -1,5 +1,4 @@
 #pragma once
-#include "DynamicArray.h"
 #include "Movie.h"
 #include "Repository.h"
 #include "AdminService.h"
@@ -12,9 +11,7 @@
 class Tests
 {
 public:
-		void testDynamicArray();
 		void testMovie();
-		void testAdminService2();
 		void testRepository();
 		void testAdminService();
 		void testToString();

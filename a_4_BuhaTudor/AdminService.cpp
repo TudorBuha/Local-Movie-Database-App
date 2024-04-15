@@ -51,28 +51,15 @@ bool AdminService::increaseLikes(string Title, string Genre)
 {
 	Movie movieToUpdate{ Title, Genre, 0, 0, "" };	
 	int indexOfMovieToUpdate = this->moviesRepository.getMoviePosition(movieToUpdate);
-	Movie oldMovie = this->moviesRepository.getAllMovies().getElement(indexOfMovieToUpdate);
+	Movie oldMovie = this->moviesRepository.getAllMovies()[indexOfMovieToUpdate];
 	Movie updatedMovie{ Title, Genre, oldMovie.getYearOfRelease(), oldMovie.getNrLikes() + 1, oldMovie.getLink() };
 	return this->moviesRepository.updateMovie(indexOfMovieToUpdate, updatedMovie);
 }
-
-/*
-bool AdminService::increaseLikes(string Title, int YearOfRelease)
-{
-	string Genre="", Link="";
-	int NrLikes=0;
-	Movie movieToUpdate{ Title, Genre, YearOfRelease, NrLikes, Link };
-	int indexOfMovieToUpdate = this->moviesRepository.getMoviePosition(movieToUpdate);
-	Movie oldMovie = this->moviesRepository.getAllMovies().getElement(indexOfMovieToUpdate);
-	Movie updatedMovie{ Title, Genre, oldMovie.getYearOfRelease(), oldMovie.getNrLikes() + 1, oldMovie.getLink() };
-	return this->moviesRepository.updateMovie(indexOfMovieToUpdate, updatedMovie);
-}
-*/
 
 /*
 	Function that returns all the movies from the repository
 */
-DynamicArray<Movie> AdminService::getAllMovies()
+vector<Movie> AdminService::getAllMovies()
 {
 	return this->moviesRepository.getAllMovies();
 }

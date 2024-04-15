@@ -1,10 +1,11 @@
 #include "Repository.h"
+#include <algorithm>
 
 /*
 	Constructor for the Repository class
 	Initializes the repository with an empty list of movies
 */
-Repository::Repository(DynamicArray<Movie> initialMovies) : allMovies{ initialMovies }
+Repository::Repository(std::vector<Movie> initialMovies) : allMovies{ initialMovies }
 {
 }
 
@@ -12,7 +13,7 @@ Repository::Repository(DynamicArray<Movie> initialMovies) : allMovies{ initialMo
 	Getter for the list of movies
 	Returns a DynamicArray of Movie objects
 */
-DynamicArray<Movie> Repository::getAllMovies()
+vector<Movie> Repository::getAllMovies()
 {
 	return this->allMovies;
 }
@@ -29,10 +30,10 @@ DynamicArray<Movie> Repository::getAllMovies()
 */
 bool Repository::addMovie(Movie movieToAdd)
 {
-	if (this->allMovies.findPositionOfElement(movieToAdd) != -1)
+	auto iterator = std::find(this->allMovies.begin(), this->allMovies.end(), movieToAdd);
+	if(iterator != this->allMovies.end())
 		return false;
-	this->allMovies.addElement(movieToAdd);
-
+	this->allMovies.push_back(movieToAdd);
 	return true;
 }
 
@@ -46,9 +47,9 @@ bool Repository::addMovie(Movie movieToAdd)
 */
 bool Repository::removeMovie(int indexOfMovieToRemove)
 {
-	if (indexOfMovieToRemove < 0 || indexOfMovieToRemove >= this->allMovies.getSize())
+	if (indexOfMovieToRemove < 0 || indexOfMovieToRemove >= this->allMovies.size())
 		return false;
-	this->allMovies.removeElement(indexOfMovieToRemove);
+	this->allMovies.erase(this->allMovies.begin() + indexOfMovieToRemove);
 	return true;
 }
 
@@ -63,9 +64,9 @@ bool Repository::removeMovie(int indexOfMovieToRemove)
 */
 bool Repository::updateMovie(int indexOfMovieToUpdate, Movie updatedMovie)
 {
-	if (indexOfMovieToUpdate < 0 || indexOfMovieToUpdate > this->allMovies.getSize())
+	if (indexOfMovieToUpdate < 0 || indexOfMovieToUpdate > this->allMovies.size())
 		return false;
-	this->allMovies.updateElement(indexOfMovieToUpdate, updatedMovie);
+	this->allMovies[indexOfMovieToUpdate] = updatedMovie;
 	return true;
 }
 
@@ -78,6 +79,9 @@ bool Repository::updateMovie(int indexOfMovieToUpdate, Movie updatedMovie)
 */
 int Repository::getMoviePosition(Movie movieToGetPosition)
 {
-	return this->allMovies.findPositionOfElement(movieToGetPosition);
+	auto iterator = std::find(this->allMovies.begin(), this->allMovies.end(), movieToGetPosition);
+	if (iterator == this->allMovies.end())
+		return -1;
+	return std::distance(this->allMovies.begin(), iterator);
 }
 

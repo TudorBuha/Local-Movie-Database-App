@@ -2,65 +2,8 @@
 #include <assert.h>
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 
-void Tests::testDynamicArray()
-{
-	DynamicArray<int> testArray;
-	assert(testArray.getSize() == 0);
-
-	//Testing adding elements
-	for (int index = 0; index < 10; index++)
-	{
-		testArray.addElement(index);
-	}
-	assert(testArray.getSize() == 10);
-
-	//Testing getting elements
-	for (int index = 0; index < 10; index++)
-	{
-		assert(testArray.getElement(index) == index);
-	}
-
-	//Testing removing elements
-	testArray.removeElement(5);
-	assert(testArray.getSize() == 9);
-	assert(testArray.getElement(5) == 6);
-
-	//Testing updating elements
-	testArray.updateElement(5, 100);
-	assert(testArray.getElement(5) == 100);
-
-	//Testing copy constructor
-	DynamicArray<int> testArray2(testArray);
-	assert(testArray2.getSize() == 9);
-	assert(testArray2.getElement(5) == 100);
-
-	//Testing assignment operator
-	DynamicArray<int> testArray3;
-	testArray3 = testArray;
-	assert(testArray3.getSize() == 9);
-	assert(testArray3.getElement(5) == 100);
-
-	//Testing findPositionOfElement
-	assert(testArray.findPositionOfElement(100) == 5);
-	assert(testArray.findPositionOfElement(101) == -1);
-
-	//Testing resize
-	DynamicArray<int> testArray4;
-	for (int index = 0; index < 100; index++)
-	{
-		testArray4.addElement(index);
-	}
-	assert(testArray4.getSize() == 100);
-	assert(testArray4.getElement(99) == 99);
-
-	//Test remove element with invalid index
-	//testArray4.removeElement(100);
-	//assert(testArray4.getSize() == 100);
-
-
-
-}
 
 void Tests::testMovie()
 {
@@ -115,21 +58,21 @@ void Tests::testRepository()
 
 void Tests::testAdminService()
 {
-	DynamicArray<Movie> initialMovies;
-	Repository testRepo(initialMovies);
-	AdminService testService(testRepo);
+	vector<Movie> initialMovies;
+	Repository testRepo{ initialMovies };
+	AdminService testService{ testRepo };
 
 	assert(testService.addMovie("TestTitle1", "TestGenre1", 0, 0, "TestLink1") == true);
 	assert(testService.addMovie("TestTitle2", "TestGenre2", 0, 0, "TestLink2") == true);
 
-	DynamicArray<Movie> allMovies = testService.getAllMovies();
-	assert(allMovies.getSize() == 2);
+	vector<Movie> allMovies = testService.getAllMovies();
+	assert(allMovies.size() == 2);
 
 	assert(testService.removeMovie("TestTitle1", "TestGenre1") == true);
-	assert(testService.getAllMovies().getSize() == 1);
+	assert(testService.getAllMovies().size() == 1);
 
 	assert(testService.updateMovie("TestTitle2", "TestGenre2", "NewTitle", "NewGenre", 2001, 101, "NewLink") == true);
-	Movie updatedMovie = testService.getAllMovies().getElement(0);
+	Movie updatedMovie = testService.getAllMovies()[0];
 	assert(updatedMovie.getTitle() == "NewTitle");
 	assert(updatedMovie.getGenre() == "NewGenre");
 	assert(updatedMovie.getYearOfRelease() == 2001);
@@ -138,7 +81,7 @@ void Tests::testAdminService()
 
 	//test increase like function
 	assert(testService.increaseLikes("NewTitle", "NewGenre") == true);
-	updatedMovie = testService.getAllMovies().getElement(0);
+	updatedMovie = testService.getAllMovies()[0];
 	assert(updatedMovie.getNrLikes() == 102);
 
 }
@@ -147,31 +90,31 @@ void Tests::testGetAllMovies()
 {
 	Movie testMovie("TestTitle", "TestGenre", 2000, 100, "TestLink");
 	// Initialize the repository with sample movie
-	DynamicArray<Movie> initialMovies;
-	initialMovies.addElement(testMovie);
+	vector<Movie> initialMovies;
+	initialMovies.push_back(testMovie);
 	Repository testRepo(initialMovies);
-	DynamicArray<Movie> allMovies = testRepo.getAllMovies();
-	assert(allMovies.getSize() == 1);
-	assert(allMovies.getElement(0) == Movie("TestTitle", "TestGenre", 2000, 100, "TestLink"));
+	vector<Movie> allMovies = testRepo.getAllMovies();
+	assert(allMovies.size() == 1);
+	assert(allMovies[0] == Movie("TestTitle", "TestGenre", 2000, 100, "TestLink"));
 }
 
 void Tests::testAddMovieToRepository()
 {
 	Movie validMovie("TestTitle", "TestGenre", 2000, 100, "TestLink");
 	// Initialize the repository with sample movie
-	DynamicArray<Movie> initialMovies;
+	vector<Movie> initialMovies;
 	Repository repo(initialMovies);
 	// Test the addMovie method
 	bool checkAdded = repo.addMovie(validMovie);
 	assert(checkAdded == true);
-	DynamicArray<Movie> allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 1);
-	assert(allMovies.getElement(0) == validMovie);
+	vector<Movie> allMovies = repo.getAllMovies();
+	assert(allMovies.size() == 1);
+	assert(allMovies[0] == validMovie);
 	//Test adding a movie that already exists (should return false)
 	checkAdded = repo.addMovie(validMovie);
 	assert(checkAdded == false);
 	allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 1);
+	assert(allMovies.size() == 1);
 }
 
 void Tests::testRemoveMovieFromRepository()
@@ -181,30 +124,30 @@ void Tests::testRemoveMovieFromRepository()
 	Movie testMovieToAdd("TestTitle3", "TestGenre3", 2002, 102, "TestLink3");
 
 	// Initialize the repository with the sample movies
-	DynamicArray<Movie> initialMovies;
-	initialMovies.addElement(testMovieToCheckRemoveElement);
-	initialMovies.addElement(testMovieToCheckRemovedPosition);
+	vector<Movie> initialMovies;
+	initialMovies.push_back(testMovieToCheckRemoveElement);
+	initialMovies.push_back(testMovieToCheckRemovedPosition);
 	Repository repo(initialMovies);
 
 	// Test the removeMovieFromRepository function
 	bool checkRemoved = repo.removeMovie(1);
 	assert(checkRemoved == true);
-	DynamicArray<Movie> allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 1);
-	assert(allMovies.getElement(0) == testMovieToCheckRemoveElement);
+	vector<Movie> allMovies = repo.getAllMovies();
+	assert(allMovies.size() == 1);
+	assert(allMovies[0] == testMovieToCheckRemoveElement);
 
 	// Test removing a movie with an invalid index (should not remove)
 	checkRemoved = repo.removeMovie(77);
 	assert(checkRemoved == false);
 	allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 1);
+	assert(allMovies.size() == 1);
 
 	//Test adding a movie after removing one
 	bool checkAdded = repo.addMovie(testMovieToAdd);
 	assert(checkAdded == true);
 	allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 2);
-	assert(allMovies.getElement(1) == testMovieToAdd);
+	assert(allMovies.size() == 2);
+	assert(allMovies[1] == testMovieToAdd);
 
 }
 
@@ -214,27 +157,27 @@ void Tests::testUpdateMovieFromRepository()
 	Movie testMovieToUpdate("TestTitle2", "TestGenre2", 2001, 101, "TestLink2");
 
 	// Initialize the repository with the sample movies
-	DynamicArray<Movie> initialMovies;
-	initialMovies.addElement(testMovieToCheckUpdatePosition);
-	initialMovies.addElement(testMovieToUpdate);
+	vector<Movie> initialMovies;
+	initialMovies.push_back(testMovieToCheckUpdatePosition);
+	initialMovies.push_back(testMovieToUpdate);
 	Repository repo(initialMovies);
 
 	// Test updateing a movie from a valid position
 	Movie movieToTestUpdate("TestTitle3", "TestGenre3", 2002, 102, "TestLink3");
 	repo.addMovie(movieToTestUpdate);
 	Movie updatedMovie("UpdatedTitle", "UpdatedGenre", 2003, 103, "UpdatedLink");
-	bool checkUpdated = repo.updateMovie(2, updatedMovie); /////////////////  1
+	bool checkUpdated = repo.updateMovie(2, updatedMovie); 
 	assert(checkUpdated == true);
-	DynamicArray<Movie> allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 3);
-	assert(allMovies.getElement(2) == updatedMovie);///////////////////////  1
+	vector<Movie> allMovies = repo.getAllMovies();
+	assert(allMovies.size() == 3);
+	assert(allMovies[2] == updatedMovie);
 
 	// Test updating a movie at an invalid index
 	checkUpdated = repo.updateMovie(77, updatedMovie);
 	assert(checkUpdated == false);
 	allMovies = repo.getAllMovies();
-	assert(allMovies.getSize() == 3);
-	assert(allMovies.getElement(2) == updatedMovie);
+	assert(allMovies.size() == 3);
+	assert(allMovies[2] == updatedMovie);
 }
 
 void Tests::testGetMoviePositionInRepository()
@@ -242,8 +185,8 @@ void Tests::testGetMoviePositionInRepository()
 	Movie testMovie1("TestTitle", "TestGenre", 2000, 100, "TestLink");
 
 	// Initialize the repository with the sample movies
-	DynamicArray<Movie> initialMovies;
-	initialMovies.addElement(testMovie1);
+	vector<Movie> initialMovies;
+	initialMovies.push_back(testMovie1);
 	Repository repo(initialMovies);
 
 	// Test the getMoviePositionInRepository function with an existing movie
@@ -263,34 +206,29 @@ void Tests::testUserService()
 	Movie testMovieToCheckUserRemove("TestTitle2", "TestGenre2", 2001, 101, "TestLink2");
 
 	// Create user service
-	DynamicArray<Movie> initialMovies;
-	Repository repo(initialMovies);
-	UserService userService(repo);
-	
-	
-	//Initialise watchlist
-	userService.initialiseWatchList();
-	assert(userService.getWatchList().getSize() == 0);
-	
+	vector<Movie> initialMovies;
+	Repository repo{ initialMovies };
+	UserService userService{ repo };
+		
 	
 	// Test addMovieToWatchList
 	assert(userService.addMovieToWatchList(testMovieToCheckUserAdd) == true);
 	assert(userService.addMovieToWatchList(testMovieToCheckUserAdd) == false);
-	assert(userService.getWatchList().getSize() == 1);
+	assert(userService.getWatchList().size() == 1);
 
 	// Test removeMovieFromWatchList
 	assert(userService.removeMovieFromWatchList("TestTitle1", "TestGenre1") == true);
 	assert(userService.removeMovieFromWatchList("TestTitle1", "TestGenre1") == false);
-	assert(userService.getWatchList().getSize() == 0);
+	assert(userService.getWatchList().size() == 0);
 
 	// Test getMoviesOfGivenGenre
-	DynamicArray<Movie> allMovies;
-	allMovies.addElement(testMovieToCheckUserAdd);
-	allMovies.addElement(testMovieToCheckUserRemove);
-	DynamicArray<Movie> neededMovies = userService.getMoviesOfGivenGenre(allMovies, "");
-	assert(neededMovies.getSize() == 2);
+	vector<Movie> allMovies;
+	allMovies.push_back(testMovieToCheckUserAdd);
+	allMovies.push_back(testMovieToCheckUserRemove);
+	vector<Movie> neededMovies = userService.getMoviesOfGivenGenre(allMovies, "");
+	assert(neededMovies.size() == 2);
 	neededMovies = userService.getMoviesOfGivenGenre(allMovies, "TestGenre1");
-	assert(neededMovies.getSize() == 1);
+	assert(neededMovies.size() == 1);
 	
 
 
@@ -299,7 +237,6 @@ void Tests::testUserService()
 
 void Tests::testAll()
 {
-	this->testDynamicArray();
 	this->testMovie();
 	this->testRepository();
 	this->testAdminService();

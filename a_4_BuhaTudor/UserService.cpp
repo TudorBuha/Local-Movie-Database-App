@@ -1,5 +1,6 @@
 #include "UserService.h"
-
+#include <iterator>
+#include <algorithm>
 /*
   Constructor for the UserService class
 */
@@ -15,9 +16,10 @@ UserService::UserService(Repository initialMoviesRepository) : moviesRepository(
 */
 bool UserService::addMovieToWatchList(Movie movieToAdd)
 {
-	if(this->watchList.findPositionOfElement(movieToAdd) != -1)
+	auto iterator = std::find(this->watchList.begin(), this->watchList.end(), movieToAdd);
+	if(iterator != this->watchList.end())
 		return false;
-	this->watchList.addElement(movieToAdd);
+	this->watchList.push_back(movieToAdd);
 	return true;
 }
 
@@ -37,10 +39,10 @@ bool UserService::removeMovieFromWatchList(string Title, string Genre)
 	string Link = "";
 	int NrLikes = 0, YearOfRelease = 0;
 	Movie movieToRemove(Title, Genre, YearOfRelease, NrLikes, Link);
-	int indexOfMovieToRemove = this->watchList.findPositionOfElement(movieToRemove);
-	if(indexOfMovieToRemove < 0 || indexOfMovieToRemove >= this->watchList.getSize())
+	auto iterator = std::find(this->watchList.begin(), this->watchList.end(), movieToRemove);
+	if(iterator == this->watchList.end())
 		return false;
-	this->watchList.removeElement(indexOfMovieToRemove);
+	this->watchList.erase(iterator);
 	return true;
 }
 
@@ -50,18 +52,12 @@ bool UserService::removeMovieFromWatchList(string Title, string Genre)
   Returns:
 	- a DynamicArray<Movie> object that contains all the movies from the watch list
 */
-DynamicArray<Movie> UserService::getMoviesOfGivenGenre(DynamicArray<Movie> allMovies, string Genre)
+vector<Movie> UserService::getMoviesOfGivenGenre(vector<Movie> allMovies, string Genre)
 {
 	if(Genre.compare("") == 0)
 		return allMovies;
-	DynamicArray<Movie> neededMovies;
-	int sizeOfRepository = allMovies.getSize();
-	for(int index = 0; index < sizeOfRepository; index++)
-	{
-		Movie currentMovie = allMovies.getElement(index);
-		if(currentMovie.getGenre().compare(Genre) == 0)
-			neededMovies.addElement(currentMovie);
-	}
+	vector<Movie> neededMovies;
+	std::copy_if(allMovies.begin(), allMovies.end(), std::back_inserter(neededMovies), [Genre](const Movie& movie) { return movie.getGenre() == Genre; });
 	return neededMovies;
 }
 
@@ -71,7 +67,7 @@ DynamicArray<Movie> UserService::getMoviesOfGivenGenre(DynamicArray<Movie> allMo
   Returns:
 	- a DynamicArray<Movie> object that contains all the movies from the watch list
 */
-DynamicArray<Movie> UserService::getWatchList()
+vector<Movie> UserService::getWatchList()
 {
 	return this->watchList;	
 }
@@ -82,7 +78,9 @@ DynamicArray<Movie> UserService::getWatchList()
   Returns:
 	- a DynamicArray<Movie> object that contains all the movies from the watch list
 */
+/*
 void UserService::initialiseWatchList()
 {
 	this->watchList = this->moviesRepository.getAllMovies();
 }
+*/

@@ -7,7 +7,7 @@ int main()
 {
 	//  taskkill /F /IM a_4_BuhaTudor.exe
 
-	DynamicArray<Movie> allMovies;
+	vector<Movie> allMovies;
 
 	Repository repo{ allMovies };
 

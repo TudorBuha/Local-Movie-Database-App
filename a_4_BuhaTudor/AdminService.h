@@ -16,7 +16,7 @@ public:
 	bool updateMovie(string Title, string Genre, string NewTitle, string NewGenre, int NewYearOfRelease, int NewNrLikes, string NewLink);
 	bool increaseLikes(string Title, string Genre);
 
-	DynamicArray<Movie> getAllMovies();
+	vector<Movie> getAllMovies();
 	void initialiseAllMovies();
 
 
