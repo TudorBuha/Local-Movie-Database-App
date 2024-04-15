@@ -33,5 +33,9 @@ public:
 	bool operator == (const Movie& MovieToCompare); // for comparing two movie objects
 	void operator = (const Movie& MovieToCopy); // for making a copy of the movie object
 
+
+	friend std::istream& operator >> (std::istream& inputFile, Movie& movieToRead); // for reading a movie object from the console
+	friend std::ostream& operator << (std::ostream& outputFile, const Movie& movieToWrite); // for writing a movie object to the console
+
 	string toString();
 };

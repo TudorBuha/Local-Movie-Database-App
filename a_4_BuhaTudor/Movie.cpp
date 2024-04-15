@@ -1,5 +1,8 @@
 #include "Movie.h"
-
+#include "Utils.h"
+#include <iostream>
+#include <string>
+#include <vector>
 /*
 	Constructor for the Movie class
 */
@@ -113,9 +116,37 @@ void Movie::operator=(const Movie& MovieToCopy)
 }
 
 /*
-	Overloading the << operator
+	Turns the movie object into a string representation
 */
 string Movie::toString()
 {
 	return this->Title + " - " + this->Genre + " - " + std::to_string(this->YearOfRelease) + " - " + std::to_string(this->NrLikes) + " likes - " + this->Link;
+}
+
+/*
+	Overloading the >> operator
+*/
+
+std::istream& operator>>(std::istream& inputFile, Movie& movieToRead)
+{
+	std::string lineRead;
+	std::getline(inputFile, lineRead);
+	std::vector<std::string> tokens = tokenize(lineRead, ',');
+	if (tokens.size() != 5)
+		return inputFile;
+	movieToRead.Title = tokens[0];
+	movieToRead.Genre = tokens[1];
+	movieToRead.YearOfRelease = std::stoi(tokens[2]);
+	movieToRead.NrLikes = std::stoi(tokens[3]);
+	movieToRead.Link = tokens[4];
+	return inputFile;
+}
+
+/*
+	Overloading the << operator
+*/
+std::ostream& operator<<(std::ostream& outputFile, const Movie& movieToWrite)
+{
+	outputFile << movieToWrite.Title << "," << movieToWrite.Genre << "," << movieToWrite.YearOfRelease << "," << movieToWrite.NrLikes << "," << movieToWrite.Link << "\n";
+	return outputFile;
 }

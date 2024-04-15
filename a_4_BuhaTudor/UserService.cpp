@@ -78,7 +78,7 @@ vector<Movie> UserService::getWatchList()
   Returns:
 	- a DynamicArray<Movie> object that contains all the movies from the watch list
 */
-/*
+/*\
 void UserService::initialiseWatchList()
 {
 	this->watchList = this->moviesRepository.getAllMovies();

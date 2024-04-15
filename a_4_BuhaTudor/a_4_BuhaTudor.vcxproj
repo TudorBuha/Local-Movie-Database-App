@@ -134,6 +134,7 @@
     <ClInclude Include="Tests.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UserService.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdminService.cpp" />
@@ -143,6 +144,10 @@
     <ClCompile Include="Tests.cpp" />
     <ClCompile Include="UI.cpp" />
     <ClCompile Include="UserService.cpp" />
+    <ClCompile Include="Utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="movies.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
