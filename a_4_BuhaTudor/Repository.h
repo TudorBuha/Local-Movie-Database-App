@@ -8,11 +8,15 @@ class Repository
 {
 private:
 	vector<Movie> allMovies;
+	std::string filename;
 public:
-	Repository(vector<Movie> initialMovies = {});
+	Repository(std::string filename, std::vector<Movie> initialMovies = {});
 	vector<Movie> getAllMovies();
-	bool addMovie(Movie movieToAdd);
-	bool removeMovie(int indexOfMovieToRemove);
-	bool updateMovie(int indexOfMovieToUpdate, Movie updatedMovie);
+	void addMovie(Movie movieToAdd);
+	void removeMovie(int indexOfMovieToRemove);
+	void updateMovie(int indexOfMovieToUpdate, Movie updatedMovie);
 	int getMoviePosition(Movie movieToGetPosition);
+private:
+	void readFromFile();
+	void writeToFile();
 };

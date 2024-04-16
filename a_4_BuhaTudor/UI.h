@@ -25,6 +25,9 @@ public:
 	void displayWatchlistUI();
 	void printUserMenuUI();
 	void userModeUI();
+	// 
+	void saveWatchlistToFileUI();
+	void openWatchlistUI();
 
 	void startAppUI();
 

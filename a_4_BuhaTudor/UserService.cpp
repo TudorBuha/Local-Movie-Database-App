@@ -4,7 +4,7 @@
 /*
   Constructor for the UserService class
 */
-UserService::UserService(Repository initialMoviesRepository) : moviesRepository(initialMoviesRepository)
+UserService::UserService(Repository initialMoviesRepository, FileWatchlist* initialWatchlist) : moviesRepository{ initialMoviesRepository }, watchList{ initialWatchlist }
 {
 }
 
@@ -16,11 +16,14 @@ UserService::UserService(Repository initialMoviesRepository) : moviesRepository(
 */
 bool UserService::addMovieToWatchList(Movie movieToAdd)
 {
+	/*
 	auto iterator = std::find(this->watchList.begin(), this->watchList.end(), movieToAdd);
 	if(iterator != this->watchList.end())
 		return false;
 	this->watchList.push_back(movieToAdd);
 	return true;
+	*/
+	return this->watchList->addMovie(movieToAdd);
 }
 
 /*
@@ -36,6 +39,7 @@ bool UserService::addMovieToWatchList(Movie movieToAdd)
 */
 bool UserService::removeMovieFromWatchList(string Title, string Genre)
 {
+	/*
 	string Link = "";
 	int NrLikes = 0, YearOfRelease = 0;
 	Movie movieToRemove(Title, Genre, YearOfRelease, NrLikes, Link);
@@ -44,6 +48,11 @@ bool UserService::removeMovieFromWatchList(string Title, string Genre)
 		return false;
 	this->watchList.erase(iterator);
 	return true;
+	*/
+	if (this->watchList == nullptr)
+		return false;
+	Movie movieToRemove(Title, Genre, 0, 0, "");
+	return this->watchList->removeMovie(movieToRemove);
 }
 
 /*
@@ -67,7 +76,7 @@ vector<Movie> UserService::getMoviesOfGivenGenre(vector<Movie> allMovies, string
   Returns:
 	- a DynamicArray<Movie> object that contains all the movies from the watch list
 */
-vector<Movie> UserService::getWatchList()
+FileWatchlist* UserService::getWatchList()
 {
 	return this->watchList;	
 }
@@ -84,3 +93,13 @@ void UserService::initialiseWatchList()
 	this->watchList = this->moviesRepository.getAllMovies();
 }
 */
+
+void UserService::saveWatchlist()
+{
+	this->watchList->writeToFile();
+}
+
+void UserService::openWatchlist()
+{
+	this->watchList->displayWatchlist();
+}

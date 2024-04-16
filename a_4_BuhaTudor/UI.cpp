@@ -8,7 +8,20 @@ using std::cout;
 using std::cin;
 using std::getline;
 
-UI::UI(AdminService initialAdminService, UserService initialUserService) : adminService(initialAdminService), userService(initialUserService)
+#define USER_SEARCH 1
+#define USER_REMOVE 2
+#define USER_CONSOLE_WATCHLIST 3
+#define USER_SAVE_WATCHLIST 4
+#define USER_OPEN_WATCHLIST 5
+
+#define ADMIN_ADD 1
+#define ADMIN_REMOVE 2
+#define ADMIN_UPDATE 3
+#define ADMIN_DISPLAY_TUTORIALS 4
+
+#define EXIT 0
+
+UI::UI(AdminService initialAdminService, UserService initialUserService) : adminService{ initialAdminService }, userService{ initialUserService }
 {
 }
 
@@ -34,11 +47,14 @@ void UI::addMovieUi()
 	cin.ignore();
 	getline(cin, Link);
 
-	bool checkAdded = this->adminService.addMovie(Title, Genre, YearOfRelease, NrLikes, Link);
-	if (checkAdded == true)
-		cout << "Movie added successfully!" << '\n';
-	else
-		cout << "Movie already exists!" << '\n';
+	try {
+		this->adminService.addMovie(Title, Genre, YearOfRelease, NrLikes, Link);
+		std::cout << "Movie added successfully!" << '\n';
+	}
+	catch (const std::exception& message)
+	{
+		std::cout << message.what() << '\n';
+	}
 }
 
 void UI::removeMovieUI()
@@ -54,11 +70,14 @@ void UI::removeMovieUI()
 
 	getline(cin, Genre);
 
-	bool checkRemoved = this->adminService.removeMovie(Title, Genre);
-	if (checkRemoved == true)
-		cout << "Movie removed successfully!" << '\n';
-	else
-		cout << "Movie does not exist!" << '\n';
+	try {
+			this->adminService.removeMovie(Title, Genre);
+			std::cout << "Movie removed successfully!" << '\n';
+	}
+	catch (const std::exception& message)
+	{
+		std::cout << message.what() << '\n';
+	}
 }
 
 
@@ -99,11 +118,14 @@ void UI::updateMovieUI()
 	cin.ignore();
 	getline(cin, newLink);
 
-	bool checkUpdated = this->adminService.updateMovie(Title, Genre, newTitle, newGenre, newYearOfRelease, newNrLikes, newLink);
-	if (checkUpdated == true)
-		cout << "Movie updated successfully!" << '\n';
-	else
-		cout << "Movie does not exist!" << '\n';
+	try {
+		this->adminService.updateMovie(Title, Genre, newTitle, newGenre, newYearOfRelease, newNrLikes, newLink);
+		std::cout << "Movie updated successfully!" << '\n';
+	}
+	catch (const std::exception& message)
+	{
+		std::cout << message.what() << '\n';
+	}
 }
 
 
@@ -146,19 +168,19 @@ void UI::adminModeUI()
 
 		switch (option)
 		{
-		case 1:
+		case ADMIN_ADD:
 			addMovieUi();
 			break;
-		case 2:
+		case ADMIN_REMOVE:
 			removeMovieUI();
 			break;
-		case 3:
+		case ADMIN_UPDATE:
 			updateMovieUI();
 			break;
-		case 4:
+		case ADMIN_DISPLAY_TUTORIALS:
 			displayAllMoviesUI();
 			break;
-		case 0:
+		case EXIT:
 			cout << std::endl;
 			return;
 		default:
@@ -273,12 +295,12 @@ void UI::removeMovieFromWatchlistUI()
 
 void UI::displayWatchlistUI()
 {
-	vector<Movie> watchlist = this->userService.getWatchList();
-	for (int i = 0; i < watchlist.size(); i++)
+	std::vector<Movie> allMovies = this->userService.getWatchList()->getAllMovies();
+	for (const auto& currentMovie : allMovies)
 	{
-		Movie currentMovie = watchlist[i];
-		cout << "#" << i + 1 << ". ";
-		cout << currentMovie.toString() << '\n';
+		std::cout<<"#"<< &currentMovie - allMovies.data() + 1 << ".";
+		std::cout<<currentMovie.getTitle()<< " - " << currentMovie.getGenre()<< " - " << currentMovie.getYearOfRelease()<<", Number of likes: "<<currentMovie.getNrLikes()<<", Link: "<<currentMovie.getLink() << '\n';
+		
 	}
 }
 
@@ -288,8 +310,31 @@ void UI::printUserMenuUI()
 	cout << "1. Search movie by genre." << '\n';
 	cout << "2. Remove movie from watchlist." << '\n';
 	cout << "3. Display watchlist." << '\n';
+	cout << "4. Save watchlist to file." << '\n';
+	cout << "5. Open watchlist." << '\n';
 	cout << "0. Exit user mode." << '\n';
 }
+
+void UI::saveWatchlistToFileUI()
+{
+	std::string filename;
+	std::cout << "Input the file name (absolute path): ";
+	std::cin.ignore();
+	std::getline(std::cin, filename);
+	this->userService.saveWatchlist();
+
+	if (this->userService.getWatchList() == nullptr)
+	{
+		std::cout << "Watchlist cannot be displayed!" << '\n';
+		return;
+	}
+}
+
+void UI::openWatchlistUI()
+{
+	this->userService.openWatchlist();
+}
+
 
 void UI::userModeUI()
 {
@@ -300,7 +345,7 @@ void UI::userModeUI()
 		cout<<"Enter option: ";
 		cin >> optionChosen;
 
-		if (cin.fail() || optionChosen < 0 || optionChosen > 3)
+		if (cin.fail() || optionChosen < 0 || optionChosen > 5)
 		{
 			cout<<"Invalid option!"<<'\n';
 			cin.clear();
@@ -309,16 +354,22 @@ void UI::userModeUI()
 		}
 		switch (optionChosen)
 		{
-		case 1:
-			searchMovieByGenreUI();
+		case USER_SEARCH:
+			this->searchMovieByGenreUI();
 			break;
-		case 2:
-			removeMovieFromWatchlistUI();
+		case USER_REMOVE:
+			this->removeMovieFromWatchlistUI();
 			break;
-		case 3:
-			displayWatchlistUI();
+		case USER_CONSOLE_WATCHLIST:
+			this->displayWatchlistUI();
 			break;
-		case 0:
+		case USER_SAVE_WATCHLIST:
+			this->saveWatchlistToFileUI();
+			break;
+		case USER_OPEN_WATCHLIST:
+			this->openWatchlistUI();
+			break;
+		case EXIT:
 			cout << std::endl;
 			return;
 		default:

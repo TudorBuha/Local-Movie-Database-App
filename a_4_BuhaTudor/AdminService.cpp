@@ -7,10 +7,7 @@ AdminService::AdminService(Repository initialMoviesRepository) : moviesRepositor
 {
 }
 
-/*
- Destructor for the AdminService class
-*/
-bool AdminService::addMovie(string Title, string Genre, int YearOfRelease, int NrLikes, string Link)
+void AdminService::addMovie(string Title, string Genre, int YearOfRelease, int NrLikes, string Link)
 {
 	Movie movieToAdd{ Title, Genre, YearOfRelease, NrLikes, Link };
 	return this->moviesRepository.addMovie(movieToAdd);
@@ -19,7 +16,7 @@ bool AdminService::addMovie(string Title, string Genre, int YearOfRelease, int N
 /*
 	Function that removes a movie from the repository
 */
-bool AdminService::removeMovie(string Title, string Genre)
+void AdminService::removeMovie(string Title, string Genre)
 {
 	//string Genre = "";
 	int NrLikes = 0;
@@ -33,7 +30,7 @@ bool AdminService::removeMovie(string Title, string Genre)
 /*
 	Function that updates a movie from the repository
 */
-bool AdminService::updateMovie(string Title, string Genre, string NewTitle, string NewGenre, int NewYearOfRelease, int NewNrLikes, string NewLink)
+void AdminService::updateMovie(string Title, string Genre, string NewTitle, string NewGenre, int NewYearOfRelease, int NewNrLikes, string NewLink)
 {
 	//int yearOfRelease = 0;
 	//int NrLikes = 0;
@@ -47,7 +44,7 @@ bool AdminService::updateMovie(string Title, string Genre, string NewTitle, stri
 /*
 	Function that increases the number of likes of a movie from the repository
 */
-bool AdminService::increaseLikes(string Title, string Genre)
+void AdminService::increaseLikes(string Title, string Genre)
 {
 	Movie movieToUpdate{ Title, Genre, 0, 0, "" };	
 	int indexOfMovieToUpdate = this->moviesRepository.getMoviePosition(movieToUpdate);

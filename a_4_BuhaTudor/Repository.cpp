@@ -1,18 +1,16 @@
 #include "Repository.h"
 #include <algorithm>
+#include <fstream>
+#include "Utils.h"
+#include "Exception.h"
 
-/*
-	Constructor for the Repository class
-	Initializes the repository with an empty list of movies
-*/
-Repository::Repository(std::vector<Movie> initialMovies) : allMovies{ initialMovies }
+Repository::Repository(std::string filename, std::vector<Movie> initialMovies) :
+	allMovies{ initialMovies },
+	filename{ filename }
 {
+	this->readFromFile();
 }
 
-/*
-	Getter for the list of movies
-	Returns a DynamicArray of Movie objects
-*/
 vector<Movie> Repository::getAllMovies()
 {
 	return this->allMovies;
@@ -20,63 +18,32 @@ vector<Movie> Repository::getAllMovies()
 
 
 
-/*
-	Adds a movie to the repository
-	Input:
-		- movieToAdd - Movie object
-	Output:
-		- true, if the movie was added successfully
-		- false, otherwise
-*/
-bool Repository::addMovie(Movie movieToAdd)
+void Repository::addMovie(Movie movieToAdd)
 {
 	auto iterator = std::find(this->allMovies.begin(), this->allMovies.end(), movieToAdd);
 	if(iterator != this->allMovies.end())
-		return false;
+		throw std::exception("Movie already exists!");
 	this->allMovies.push_back(movieToAdd);
-	return true;
+	this->writeToFile();
 }
 
-/*
-	Removes a movie from the repository
-	Input:
-		- movieToRemove - Movie object
-	Output:
-		- true, if the movie was removed successfully
-		- false, otherwise
-*/
-bool Repository::removeMovie(int indexOfMovieToRemove)
+void Repository::removeMovie(int indexOfMovieToRemove)
 {
 	if (indexOfMovieToRemove < 0 || indexOfMovieToRemove >= this->allMovies.size())
-		return false;
+		throw std::exception("Movie doesn't exists!");
 	this->allMovies.erase(this->allMovies.begin() + indexOfMovieToRemove);
-	return true;
+	this->writeToFile();
 }
 
-/*
-	Updates a movie from the repository
-	Input:
-		- indexOfMovieToUpdate - int
-		- updatedMovie - Movie object
-	Output:
-		- true, if the movie was updated successfully
-		- false, otherwise
-*/
-bool Repository::updateMovie(int indexOfMovieToUpdate, Movie updatedMovie)
+void Repository::updateMovie(int indexOfMovieToUpdate, Movie updatedMovie)
 {
 	if (indexOfMovieToUpdate < 0 || indexOfMovieToUpdate > this->allMovies.size())
-		return false;
+		throw std::exception("Movie doesn't exists!");
 	this->allMovies[indexOfMovieToUpdate] = updatedMovie;
-	return true;
+	this->writeToFile();
 }
 
-/*
-	Returns the position of a movie in the repository
-	Input:
-		- movieToGetPosition - Movie object
-	Output:
-		- int - the position of the movie in the repository
-*/
+
 int Repository::getMoviePosition(Movie movieToGetPosition)
 {
 	auto iterator = std::find(this->allMovies.begin(), this->allMovies.end(), movieToGetPosition);
@@ -85,3 +52,23 @@ int Repository::getMoviePosition(Movie movieToGetPosition)
 	return std::distance(this->allMovies.begin(), iterator);
 }
 
+void Repository::readFromFile()
+{
+	std::ifstream inputFile(this->filename);
+	if (!inputFile.is_open())
+		throw FileException("The file could not be opened!");
+	Movie movieToRead;
+	while (inputFile >> movieToRead)
+		this->allMovies.push_back(movieToRead);
+	inputFile.close();
+}
+
+void Repository::writeToFile()
+{
+	std::ofstream outputFile(this->filename);
+	if (!outputFile.is_open())
+		throw FileException("The file could not be opened!");
+	for (auto movie : this->allMovies)
+		outputFile << movie;
+	outputFile.close();
+}
