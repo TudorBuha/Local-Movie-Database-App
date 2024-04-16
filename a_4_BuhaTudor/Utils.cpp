@@ -6,7 +6,7 @@
 
 using namespace std;
 
-std::string trim(const std::string& stringToTrim)
+std::string trim(const std::string& stringToTrim) //removes leading and trailing whitespaces
 {
 	string result(stringToTrim);
 	size_t position = result.find_first_not_of(" ");
@@ -17,8 +17,8 @@ std::string trim(const std::string& stringToTrim)
 		result.erase(position + 1);
 	return result;
 }
-
-std::vector<std::string> tokenize(const std::string& stringToTokenize, char delimiter)
+ 
+std::vector<std::string> tokenize(const std::string& stringToTokenize, char delimiter)  //splits a string into a vector of strings
 {
 	vector<string> result;
 	stringstream ss(stringToTokenize);

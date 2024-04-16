@@ -127,7 +127,7 @@ string Movie::toString()
 	Overloading the >> operator
 */
 
-std::istream& operator>>(std::istream& inputFile, Movie& movieToRead)
+std::istream& operator>>(std::istream& inputFile, Movie& movieToRead) 
 {
 	std::string lineRead;
 	std::getline(inputFile, lineRead);
@@ -137,7 +137,7 @@ std::istream& operator>>(std::istream& inputFile, Movie& movieToRead)
 	movieToRead.Title = tokens[0];
 	movieToRead.Genre = tokens[1];
 	movieToRead.YearOfRelease = std::stoi(tokens[2]);
-	movieToRead.NrLikes = std::stoi(tokens[3]);
+	movieToRead.NrLikes = std::stoi(tokens[3]); 
 	movieToRead.Link = tokens[4];
 	return inputFile;
 }

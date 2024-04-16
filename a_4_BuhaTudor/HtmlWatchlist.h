@@ -9,8 +9,7 @@ class HtmlWatchlist :
 private:
     void writeMovieToHTML(std::ostream& outputFile, const Movie& movieToWrite);
 public:
-    HtmlWatchlist(const std::string& filename) : FileWatchlist{ filename } {
-    };
+    HtmlWatchlist(const std::string& filename) : FileWatchlist{ filename } {};
     void writeToFile() override;
     void displayWatchlist() override;
 };
